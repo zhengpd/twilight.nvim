@@ -169,6 +169,10 @@ function M.get_context(buf, line)
     local root = M.get_expand_root(node, config.options.expand_opts)
     if root then
       local from, to = M.range(root)
+
+      -- tree-sitter-markdown uses start-of-next-line as end of block node
+      if vim.bo.filetype == 'markdown' then to = to - 1 end
+
       return from + 1, to + 2
     end
     local from, to = M.expand(buf, line, line, line)
@@ -197,6 +201,8 @@ function M.get_context(buf, line)
       end
     end
 
+    -- tree-sitter-markdown uses start-of-next-line as end of block node
+    if vim.bo.filetype == 'markdown' then to = to - 1 end
     return from + 1, to + 2
   end
 
